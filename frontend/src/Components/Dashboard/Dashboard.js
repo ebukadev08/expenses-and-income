@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { useGlobalContext } from '../../context/globalContext';
 import History from '../../History/History';
 import { InnerLayout } from '../../styles/Layouts';
-import { dollar } from '../../utils/Icons';
+import { naira } from '../../utils/Icons';
 import Chart from '../Chart/Chart';
 
 function Dashboard() {
@@ -25,19 +25,19 @@ function Dashboard() {
                             <div className="income">
                                 <h2>Total Income</h2>
                                 <p>
-                                    {dollar} {totalIncome()}
+                                    {naira} {totalIncome()}
                                 </p>
                             </div>
                             <div className="expense">
                                 <h2>Total Expense</h2>
                                 <p>
-                                    {dollar} {totalExpenses()}
+                                    {naira} {totalExpenses()}
                                 </p>
                             </div>
                             <div className="balance">
                                 <h2>Total Balance</h2>
                                 <p>
-                                    {dollar} {totalBalance()}
+                                    {naira} {totalBalance()}
                                 </p>
                             </div>
                         </div>
@@ -47,19 +47,19 @@ function Dashboard() {
                         <h2 className="salary-title">Min <span>Salary</span>Max</h2>
                         <div className="salary-item">
                             <p>
-                                ${Math.min(...incomes.map(item => item.amount))}
+                                {naira}{Math.min(...incomes.map(item => item.amount))}
                             </p>
                             <p>
-                                ${Math.max(...incomes.map(item => item.amount))}
+                                {naira}{Math.max(...incomes.map(item => item.amount))}
                             </p>
                         </div>
                         <h2 className="salary-title">Min <span>Expense</span>Max</h2>
                         <div className="salary-item">
                             <p>
-                                ${Math.min(...expenses.map(item => item.amount))}
+                                {naira}{Math.min(...expenses.map(item => item.amount))}
                             </p>
                             <p>
-                                ${Math.max(...expenses.map(item => item.amount))}
+                                {naira}{Math.max(...expenses.map(item => item.amount))}
                             </p>
                         </div>
                     </div>
@@ -92,7 +92,7 @@ const DashboardStyled = styled.div`
                     border-radius: 20px;
                     padding: 1rem;
                     p{
-                        font-size: 3.5rem;
+                        font-size: 2.5rem;
                         font-weight: 700;
                     }
                 }
@@ -106,7 +106,7 @@ const DashboardStyled = styled.div`
                     p{
                         color: var(--color-green);
                         opacity: 0.6;
-                        font-size: 4.5rem;
+                        font-size: 2.5rem;
                     }
                 }
             }
