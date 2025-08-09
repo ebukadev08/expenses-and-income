@@ -1,0 +1,1 @@
+export const API_URL = "https://expenses-backend.onrender.com/api/v1/";
