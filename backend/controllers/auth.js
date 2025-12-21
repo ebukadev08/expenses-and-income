@@ -115,13 +115,12 @@ exports.forgotPassword = async (req, res) => {
   const token = crypto.randomBytes(32).toString("hex");
 
   user.resetToken = token;
-  user.resetTokenExpiry = new Date(Date.now() + 15 * 60 * 1000); // 15 mins
+  user.resetTokenExpiry = new Date(Date.now() + 15 * 60 * 1000);
   await user.save();
 
   const resetLink = `http://localhost:3000/reset-password/${token}`;
   const message = `Click the link to reset your password: ${resetLink}`;
 
-  // ✅ Pass `to` exactly as the parameter in sendEmail
   await sendEmail({
     to: user.email,
     subject: "Password Reset",
