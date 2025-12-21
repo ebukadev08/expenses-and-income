@@ -6,11 +6,15 @@ const app = express()
 
 require('dotenv').config()
 
-const PORT = process.env.PORT
+const PORT = process.env.PORT || 3000
 
 //middlewares
 app.use(express.json())
 app.use(cors())
+
+app.get('/', (req, res) => {
+    res.json('Welcome to Expenses and Income Tracker API')
+})
 
 //routes
 readdirSync('./routes').map((route) => app.use('/api/v1', require('./routes/' + route)))

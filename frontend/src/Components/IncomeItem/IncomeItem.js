@@ -123,6 +123,9 @@ const IncomeItemStyled = styled.div`
             font-size: 2.6rem;
         }
     }
+    .btn-con{
+        padding-left: 1rem;
+    }
 
     .content{
         flex: 1;
