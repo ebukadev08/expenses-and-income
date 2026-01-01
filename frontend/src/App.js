@@ -19,40 +19,57 @@ import { useState } from "react";
 import Loading from "./Components/Loading/Loading";
 import ForgotPassword from "./Components/ForgotPassword/ForgotPassword";
 import ResetPassword from "./Components/ResetPassword/ResetPassword";
+import AdminRoute from "./Components/AdminRoute";
+import UserManagement from "./Components/Admin/UserManagement";
+import AuditLogs from "./Components/Admin/AuditLogs";
+import AdminLayout from "./Components/Admin/AdminLayout";
+import AdminDashboard from "./Components/Admin/AdminDashboard";
 
 function App() {
   const { user, loading } = useAuth();
-  const [active, setActive] = useState(1);
 
-  if (!user) {
-    return (
-      <Router>
-        {loading && <Loading />}
-        <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="*" element={<Navigate to="/login" />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="/reset-password/:token" element={<ResetPassword />} />
-        </Routes>
-      </Router>
-    );
+  if (loading) {
+    return <Loading />; // or null
   }
 
   return (
     <Router>
-      <AppStyled bg={bg} className="App">
-        <Orb />
-        <MainLayout>
-          <Navigation active={active} setActive={setActive} />
-          <Routes>
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/income" element={<Income />} />
-            <Route path="/expenses" element={<Expenses />} />
-            <Route path="*" element={<Navigate to="/dashboard" />} />
-          </Routes>
-        </MainLayout>
-      </AppStyled>
+      {!user ? (
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password/:token" element={<ResetPassword />} />
+          <Route path="*" element={<Navigate to="/login" />} />
+        </Routes>
+      ) : (
+        <AppStyled bg={bg}>
+          <Orb />
+          <MainLayout>
+            <Navigation />
+            <Routes>
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/income" element={<Income />} />
+              <Route path="/expenses" element={<Expenses />} />
+
+              <Route
+                path="/admin"
+                element={
+                  <AdminRoute>
+                    <AdminLayout />
+                  </AdminRoute>
+                }
+              >
+                <Route index element={<AdminDashboard />} />
+                <Route path="users" element={<UserManagement />} />
+                <Route path="audit" element={<AuditLogs />} />
+              </Route>
+
+              <Route path="*" element={<Navigate to="/dashboard" />} />
+            </Routes>
+          </MainLayout>
+        </AppStyled>
+      )}
     </Router>
   );
 }

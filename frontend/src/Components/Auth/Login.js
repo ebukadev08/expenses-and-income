@@ -11,7 +11,7 @@ function Login() {
   });
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
-    setError("");
+    setError();
   };
   const handleSubmit = (e) => {
     e.preventDefault();
