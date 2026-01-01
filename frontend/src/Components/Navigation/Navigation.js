@@ -1,25 +1,31 @@
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import styled from "styled-components";
 import avatar from "../../img/avatar.png";
 import { signout } from "../../utils/Icons";
-import { menuItems } from "../../utils/menuItems";
+import { adminMenu, menuItems } from "../../utils/menuItems";
 import { useAuth } from "../../context/authContext";
 
 function Navigation() {
-  const { user, logout } = useAuth();
+  const { user, logout, loading } = useAuth();
+
+  if (!user) return null;
+
+  const isAdmin = user.role === "admin";
+  const isUser = user.role === "user";
 
   return (
     <NavStyled>
       <div className="user-con">
-        <img src={avatar} alt="" />
+        <img src={avatar} alt="avatar" />
         <div className="text">
-          <h2>Hi, {user?.name}</h2>
+          <h2>Hi, {user.name}</h2>
           <p>Your Money</p>
         </div>
       </div>
+
       <ul className="menu-items">
-        {menuItems.map((item) => {
-          return (
+        {isUser &&
+          menuItems.map((item) => (
             <NavLink
               to={item.link}
               key={item.id}
@@ -30,9 +36,23 @@ function Navigation() {
                 <span>{item.title}</span>
               </li>
             </NavLink>
-          );
-        })}
+          ))}
+
+        {isAdmin &&
+          adminMenu.map((item) => (
+            <NavLink
+              key={item.id}
+              to={item.link}
+              className={({ isActive }) => (isActive ? "active" : "")}
+            >
+              <li>
+                {item.icon}
+                <span>{item.title}</span>
+              </li>
+            </NavLink>
+          ))}
       </ul>
+
       <div className="bottom-nav" onClick={logout}>
         <li>{signout} Sign Out</li>
       </div>
@@ -82,7 +102,7 @@ const NavStyled = styled.nav`
   .bottom-nav {
     cursor: pointer;
   }
-  .menu-items a{
+  .menu-items a {
     text-decoration: none;
   }
 

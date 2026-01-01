@@ -1,6 +1,8 @@
 import React, { createContext, useState, useEffect, useContext } from "react";
 import axios from "axios";
+import api from "../utils/axios";
 import { API_URL } from "../config";
+
 
 const AuthContext = createContext();
 
@@ -11,22 +13,24 @@ export const AuthProvider = ({ children }) => {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    if (token) {
-      axios
-        .get(`${API_URL}me`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-        .then((res) => {
-          setUser(res.data);
-        })
-        .catch(() => logout())
-        .finally(() => setLoading(false));
-    } else {
+  const loadUser = async () => {
+    if (!token) {
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const res = await api.get("me");
+      setUser(res.data);
+    } catch (err) {
+      logout();
+    } finally {
       setLoading(false);
     }
-  }, [token]);
+  };
+
+  loadUser();
+}, [token]);
 
   const signup = async ({ name, email, password }) => {
     setLoading(true);
@@ -41,8 +45,8 @@ export const AuthProvider = ({ children }) => {
       setToken(res.data.token);
       setUser(res.data.user);
       setError("");
-    } catch (error) {
-      setError(error.response?.data?.message || "Signup Failed");
+    } catch (err) {
+      setError(err.response?.data?.message || "Signup Failed");
     } finally {
       setLoading(false);
     }
@@ -57,20 +61,19 @@ export const AuthProvider = ({ children }) => {
       setToken(res.data.token);
       setUser(res.data.user);
       setError("");
-    } catch (error) {
-      setError(error.response?.data?.message || "Login Failed");
+    } catch (err) {
+      setError(err.response?.data?.message || "Login Failed");
     } finally {
       setLoading(false);
     }
   };
 
-  const logout = async () => {
-    setLoading(true);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+  const logout = () => {
     localStorage.removeItem("token");
     setToken("");
     setUser(null);
     setError("");
+    setLoading(false);
   };
 
   return (
