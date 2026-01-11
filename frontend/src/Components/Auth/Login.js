@@ -4,14 +4,13 @@ import { useAuth } from "../../context/authContext";
 import { Link } from "react-router-dom";
 
 function Login() {
-  const { login, error, setError, loading } = useAuth();
+  const { login, error, loading } = useAuth();
   const [form, setForm] = useState({
     email: "",
     password: "",
   });
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
-    setError();
   };
   const handleSubmit = (e) => {
     e.preventDefault();

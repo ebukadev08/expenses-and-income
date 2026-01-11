@@ -23,7 +23,7 @@ const UserManagement = () => {
     try {
       setUpdatingId(id);
       setError("");
-      await api.patch(`/admin/users/toggle-user/${id}`);
+      await api.patch(`/admin/toggle-user/${id}`);
       fetchUsers();
     } catch (err) {
       setError(err.response?.data?.message || "Something went wrong");
