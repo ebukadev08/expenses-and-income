@@ -70,7 +70,9 @@ exports.login = async (req, res) => {
     if (!user.isActive) {
       return res
         .status(404)
-        .json({ message: "Your account has been disabled, please contact the Admin" });
+        .json({
+          message: "Your account has been disabled, please contact the Admin",
+        });
     }
 
     if (user.lockUntil && user.lockUntil > Date.now()) {
@@ -268,33 +270,41 @@ exports.getme = async (req, res) => {
 };
 
 exports.forgotPassword = async (req, res) => {
-  const { email } = req.body;
+  try {
+    const { email } = req.body;
 
-  if (!email) {
-    return res.status(400).json({ message: "Email is required" });
+    if (!email) {
+      return res.status(400).json({ message: "Email is required" });
+    }
+
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.json({
+        message: "If the email exists, a reset link was sent",
+      });
+    }
+
+    const token = crypto.randomBytes(32).toString("hex");
+
+    user.resetToken = token;
+    user.resetTokenExpiry = Date.now() + 15 * 60 * 1000;
+    await user.save();
+
+    const resetLink = `${process.env.FRONTEND_URL}/reset-password/${token}`;
+
+    await sendEmail({
+      to: user.email,
+      subject: "Password Reset",
+      message: `Click the link to reset your password: ${resetLink}`,
+    });
+
+    res.json({ message: "Reset link sent to email" });
+  } catch (error) {
+    res.status(500).json({
+      message: "Failed to send reset email",
+      error: error.message,
+    });
   }
-
-  const user = await User.findOne({ email });
-  if (!user) {
-    return res.status(404).json({ message: "User not found" });
-  }
-
-  const token = crypto.randomBytes(32).toString("hex");
-
-  user.resetToken = token;
-  user.resetTokenExpiry = new Date(Date.now() + 15 * 60 * 1000);
-  await user.save();
-
-  const resetLink = `http://localhost:3000/reset-password/${token}`;
-  const message = `Click the link to reset your password: ${resetLink}`;
-
-  await sendEmail({
-    to: user.email,
-    subject: "Password Reset",
-    message,
-  });
-
-  res.json({ message: "Reset link sent to email" });
 };
 
 exports.resetPassword = async (req, res) => {
@@ -308,6 +318,9 @@ exports.resetPassword = async (req, res) => {
 
   if (!user) {
     return res.status(400).json({ message: "Invalid or expired token" });
+  }
+  if (password.length < 8) {
+    return res.status(400).json({ message: "Password too short" });
   }
 
   user.password = await bcrypt.hash(password, 12);
