@@ -27,7 +27,7 @@ router.get(
 router.get("/admin/users", authMiddleware.protect, authMiddleware.admin, getUsers)
 router.get("/admin/audit", authMiddleware.protect, authMiddleware.admin, getAuditLogs)
 router.patch(
-  "/admin/users/toggle-user/:id",
+  "/admin/toggle-user/:id",
   authMiddleware.protect,
   authMiddleware.admin,
   toggleUser

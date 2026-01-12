@@ -70,7 +70,7 @@ exports.login = async (req, res) => {
     if (!user.isActive) {
       return res
         .status(404)
-        .json({ message: "Your account is disabled, Contact the Admin" });
+        .json({ message: "Your account has been disabled, please contact the Admin" });
     }
 
     if (user.lockUntil && user.lockUntil > Date.now()) {
