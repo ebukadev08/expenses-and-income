@@ -10,7 +10,13 @@ const PORT = process.env.PORT || 3000
 
 //middlewares
 app.use(express.json())
-app.use(cors())
+app.use(cors({
+  origin: [
+    "http://localhost:3000",
+    "https://expenses-and-income-frontend.pxxl.click/"
+  ],
+  credentials: true
+}));
 
 app.get('/', (req, res) => {
     res.json('Welcome to Expenses and Income Tracker API')
